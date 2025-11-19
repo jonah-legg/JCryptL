@@ -21,13 +21,13 @@ std::string message = "Test Message 123";
 std::vector<uint8_t> data(message.begin(), message.end());
     
 // Encrypt
-auto encrypted = encrypt(data, keys.public_key);
+auto encrypted = crypto::rsa::encrypt(data, keys.public_key);
     
 // Decrypt
-auto decrypted = decrypt(data, keys.private_key);
+auto decrypted = crypto::rsa::decrypt(data, keys.private_key);
 
 // Print decrypted message
-std::cout std::string(decrypted.begin(), decrypted.end());
+std::cout << std::string(decrypted.begin(), decrypted.end());
 ```
 
 ## Test Script
