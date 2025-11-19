@@ -1,6 +1,6 @@
 # JCryptL
 
-This is a bare-bones mathematical encryption library for educational purposes only. It processes data byte-by-byte and implements basic encryption protocols
+This is a bare-bones mathematical encryption library for educational purposes only. It processes data and implements basic encryption protocols
 
 ## WARNING: DO NOT USE IN PRODUCTION
 
