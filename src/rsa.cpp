@@ -8,6 +8,7 @@ namespace crypto::rsa {
     namespace {
         constexpr size_t KEY_SIZE = 64;
         constexpr uint64_t PUBLIC_EXPONENT = 65537;
+        constexpr size_t BLOCK_SIZE = sizeof(uint64_t) - 1;
     }
 
     RSAKeyPair generate_keypair() {
@@ -44,12 +45,20 @@ namespace crypto::rsa {
     std::vector<uint8_t> encrypt(const std::vector<uint8_t>& data, const RSAPublicKey& key) {
         std::vector<uint8_t> encrypted;
         
-        for (uint8_t byte : data) { 
-        uint64_t encrypted_value = utils::mod_pow(byte, key.e, key.n);
-        for (size_t i = 0; i < sizeof(uint64_t); i++) {
-            encrypted.push_back(static_cast<uint8_t>((encrypted_value >> (i * 8)) & 0xFF));
+        for (size_t i = 0; i < data.size(); i += BLOCK_SIZE) {
+            uint64_t block = 0;
+            size_t bytes_in_block = std::min(BLOCK_SIZE, data.size() - i);
+            
+            for (size_t j = 0; j < bytes_in_block; j++) {
+                block |= static_cast<uint64_t>(data[i + j]) << (j * 8);
+            }
+
+            uint64_t encrypted_block = utils::mod_pow(block, key.e, key.n);
+
+            for (size_t j = 0; j < sizeof(uint64_t); j++) {
+                encrypted.push_back(static_cast<uint8_t>((encrypted_block >> (j * 8)) & 0xFF));
+            }
         }
-    }
 
         return encrypted;
     }
@@ -58,13 +67,15 @@ namespace crypto::rsa {
         std::vector<uint8_t> decrypted;
         
         for (size_t i = 0; i < data.size(); i += sizeof(uint64_t)) {
-            uint64_t encrypted_value = 0;
+            uint64_t encrypted_block = 0;
             for (size_t j = 0; j < sizeof(uint64_t) && i + j < data.size(); j++) {
-                encrypted_value |= static_cast<uint64_t>(data[i + j]) << (j * 8);
+                encrypted_block |= static_cast<uint64_t>(data[i + j]) << (j * 8);
             }
 
-            uint64_t decrypted_value = utils::mod_pow(encrypted_value, key.d, key.n);
-            decrypted.push_back(static_cast<uint8_t>(decrypted_value));
+            uint64_t decrypted_block = utils::mod_pow(encrypted_block, key.d, key.n);
+            for (size_t j = 0; j < BLOCK_SIZE && decrypted.size() < data.size(); j++) {
+                decrypted.push_back(static_cast<uint8_t>((decrypted_block >> (j * 8)) & 0xFF));
+            }
         }
 
         return decrypted;
