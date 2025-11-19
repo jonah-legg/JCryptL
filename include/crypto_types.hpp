@@ -1,10 +1,9 @@
 #pragma once
 #include <cstdint>
+#include <array>
 #include <vector>
 
 namespace crypto {
-    using AESKey = std::array<uint8_t, 16>;
-
     struct RSAPublicKey {
         uint64_t n;
         uint64_t e;

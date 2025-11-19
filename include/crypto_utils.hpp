@@ -8,6 +8,7 @@ namespace crypto::utils {
     std::vector<uint8_t> random_bytes(size_t count);
     
     uint64_t gcd(uint64_t a, uint64_t b);
+    uint64_t mod_pow(uint64_t base, uint64_t exp, uint64_t mod);
     uint64_t mod_inverse(uint64_t a, uint64_t m);
     bool is_prime(uint64_t n);
 
