@@ -14,7 +14,7 @@ For real applications, use cryptographic libraries like OpenSSL, Libsodium, amon
 
 ```cpp
 // Generate key pair
-auto keys = crypto::KeyGenerator::generate_rsa();
+auto keys = crypto::rsa::generate_keypair();
     
 // Original message
 std::string message = "Test Message 123";

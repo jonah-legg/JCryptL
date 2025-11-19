@@ -1,4 +1,3 @@
-#include "key_generator.hpp"
 #include "crypto_utils.hpp"
 #include "rsa.hpp"
 #include <iostream>
@@ -15,7 +14,7 @@ void print_hex(const std::vector<uint8_t>& data) {
 
 int main() {
     try {
-        auto rsa_keys = crypto::KeyGenerator::generate_rsa();
+        auto rsa_keys = crypto::rsa::generate_keypair();
 
         std::cout << "Generated Key:\n";
         std::cout << "RSA Public (n,e): " << rsa_keys.pub.n << "," << rsa_keys.pub.e << "\n";
