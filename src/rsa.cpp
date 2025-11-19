@@ -15,7 +15,6 @@ namespace crypto::rsa {
 
         while (true) {
             do {
-                // Use smaller primes to ensure n doesn't overflow
                 p = utils::random_uint64(1ULL << 16, 1ULL << 31);
             } while (!utils::is_prime(p));
             
@@ -23,13 +22,11 @@ namespace crypto::rsa {
                 q = utils::random_uint64(1ULL << 16, 1ULL << 31);
             } while (!utils::is_prime(q) || p == q);
 
-            // Calculate n = p * q
             n = p * q;
-            if (n < p || n < q) continue; // Check for overflow
+            if (n < p || n < q) continue;
 
-            // Calculate phi = (p-1)(q-1)
             phi = (p - 1) * (q - 1);
-            if (phi < p-1 || phi < q-1) continue; // Check for overflow
+            if (phi < p-1 || phi < q-1) continue;
 
             if (utils::gcd(PUBLIC_EXPONENT, phi) == 1) {
                 break;
